@@ -1,48 +1,41 @@
-# Ignore docs files
-_gh_pages
-.jekyll-metadata
-.jekyll-cache
-.ruby-version
-.sass-cache
-.tweet-cache
-_site
-_algolia_api_key
-vendor
-.bundle
-
-# Numerous always-ignore extensions
-*.diff
-*.err
-*.orig
+# Miscellaneous
+*.class
 *.log
-*.rej
-*.swo
+*.pyc
 *.swp
-*.zip
-*.vi
-*~
-
-# OS or Editor folders
 .DS_Store
-._*
-Thumbs.db
-.cache
-.project
-.settings
-.tmproj
-*.esproj
-nbproject
-*.sublime-project
-*.sublime-workspace
-.idea
+.atom/
+.buildlog/
+.history
+.svn/
 
-# Komodo
-*.komodoproject
-.komodotools
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
 
-# grunt-html-validation
-validation-status.json
-validation-report.json
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
 
-# Folders to ignore
-node_modules
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
