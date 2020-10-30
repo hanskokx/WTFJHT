@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:markdown/markdown.dart' as md;
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
-// import 'package:date_format/date_format.dart';
 
-Future<Post> fetchPost() async {
-  final res = await http.get('https://wtfjht-40b1c.web.app/api/v1/posts/1378');
+// List<Post> parsePosts(String responseBody) {
+//   final parsed = jsonDecode(responseBody);
+//   return parsed.map<Post>((json) => Post.fromJson(json)).toList();
+// }
 
-  if (res.statusCode == 200) {
-    var data = json.decode(res.body);
-    var rest = data.toString().splitMapJoin((new RegExp(r'^\{\d+\s?:\s')),
-        onMatch: (m) => '', onNonMatch: (n) => n);
-    rest = rest.substring(0, rest.length - 1);
-    return Post.fromJson(jsonEncode(rest));
+Future<List<Post>> fetchPost(day) async {
+  final snapshot = await http
+      .get('https://wtfjht-40b1c.web.app/api/v1/posts/' + day.toString());
+
+  if (snapshot.statusCode == 200) {
+    Map<dynamic, dynamic> values = jsonDecode(snapshot.body);
+    var res = [];
+    values.forEach((key, values) {
+      final val = jsonDecode(jsonEncode(values));
+      res.add(val);
+    });
+
+    List<Post> list =
+        res.isNotEmpty ? res.map((c) => Post.fromJson(c)).toList() : [];
+
+    return list;
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -21,21 +32,10 @@ Future<Post> fetchPost() async {
   }
 }
 
-
-// class Date {
-//   final String timestamp;
-
-//   Date({this.timestamp});
-
-//   factory Date.fromJson(Map<String, dynamic> json) {
-//     return Date(timestamp: json['seconds']);
-//   }
-// }
-
 class Post {
   final String title;
   final String day;
-  // final String date;
+  final DateTime date;
   final String description;
   final String image;
   final String todayInOneSentence;
@@ -45,7 +45,7 @@ class Post {
   Post(
       {this.title,
       this.day,
-      // this.date,
+      this.date,
       this.description,
       this.image,
       this.todayInOneSentence,
@@ -56,7 +56,7 @@ class Post {
     return Post(
         title: json['title'],
         day: json['day'],
-        // date: json['date']['_seconds'],
+        date: DateTime.fromMicrosecondsSinceEpoch(json['date']['_seconds']),
         description: json['description'],
         image: json['image'],
         todayInOneSentence: json['todayInOneSentence'],
@@ -93,12 +93,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<Post> futurePost;
+  Future<List<Post>> futurePost;
 
   @override
   void initState() {
     super.initState();
-    futurePost = fetchPost();
+    futurePost = fetchPost("1378");
   }
 
   @override
@@ -108,14 +108,36 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: FutureBuilder<Post>(
+        child: FutureBuilder<List<Post>>(
           future: futurePost,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Row(children: [
-                Text("Here's your post!"),
-                Text("Title: " + snapshot.data.title.toString())
-              ]);
+              var post = snapshot.data.first;
+              var title = post.title;
+              var day = post.day;
+              var date = post.date;
+              var description = post.description;
+              var image = post.image;
+              var todayInOneSentence = post.todayInOneSentence;
+              var heading = post.heading;
+              var content = post.content;
+              return ListView(
+                  padding: const EdgeInsets.all(10.0),
+                  children: <Widget> [
+                    Column(children: [
+                      Wrap(children: [
+                        // Title
+                        MarkdownBody(data: title),
+                        Text(" "),
+                        MarkdownBody(data: description)
+                      ]),
+                      Wrap(children: [MarkdownBody(data: todayInOneSentence)]),
+                      Wrap(
+                        children: [MarkdownBody(data: content)],
+                      )
+                    ])
+                  ]
+                  );
             } else if (snapshot.hasError) {
               return Text("${snapshot.error}");
             }
