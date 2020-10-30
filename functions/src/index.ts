@@ -50,7 +50,7 @@ app.get("/posts", (req, res) => {
     .catch((error) => res.status(400).send(`Cannot get posts: ${error}`));
 });
 
-// Add a new post
+// Add a new post // ! TODO: If the post already exists, we need to update it
 app.post("/posts", async (req, res) => {
   try {
     const post: Post = {

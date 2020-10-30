@@ -1,5 +1,6 @@
 name: wtfjht
-description: Today's essential guide to the daily shock and awe in national politics. Read in moderation.
+description: Today's essential guide to the daily shock and awe in national
+  politics. Read in moderation.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -23,12 +24,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_dotenv: ^2.1.0
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
+  date_format: ^1.0.9
+  flutter_dotenv: ^2.1.0
+  http: ^0.12.2
+  markdown: ^3.0.0
 
 dev_dependencies:
   flutter_test:
